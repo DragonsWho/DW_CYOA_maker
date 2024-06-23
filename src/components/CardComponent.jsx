@@ -2,12 +2,11 @@
 import { Card, CardActionArea, CardContent, CardMedia, Typography, Box } from '@mui/material';
 
 const CardComponent = forwardRef(({
-    id, title, text, imageUrl, points, cardWidth, minCardWidth, maxHeight, clickedCards, handleCardClick, requirement, onCreateContainerThree
+    id, title, text, imageUrl, points, cardWidth, minCardWidth, maxHeight, clickedCards, handleCardClick, requirement, containerId
 }, ref) => {
     const [isAvailable, setIsAvailable] = useState(true);
 
     useEffect(() => {
-         
         if (requirement) {
             setIsAvailable(requirement(clickedCards));
         }
@@ -15,12 +14,13 @@ const CardComponent = forwardRef(({
 
     const handleClick = () => {
         if (isAvailable) {
-            handleCardClick(id, points);
-            if (id === 22 && onCreateContainerThree) {  
-                onCreateContainerThree();
-            }
+            handleCardClick(id, points, containerId);
         }
     };
+
+    // Construct the keys used to check if the card has been clicked
+    const cardKey = containerId !== null ? `${id}-${containerId}` : id;
+    const isClicked = clickedCards[cardKey] || clickedCards[id];
 
     return (
         <Box
@@ -32,8 +32,9 @@ const CardComponent = forwardRef(({
                 boxShadow: 3,
                 marginBottom: 2,
                 height: maxHeight || 'auto',
-                backgroundColor: clickedCards[id] ? '#ffcccb' : '#fff',  
-                filter: isAvailable ? 'none' : 'grayscale(100%) blur(1px)',  
+                // Use the constructed keys to apply the background color conditionally
+                backgroundColor: isClicked ? 'pink' : '#fff',
+                filter: isAvailable ? 'none' : 'grayscale(100%) blur(1px)',
                 pointerEvents: isAvailable ? 'auto' : 'none',
             }}
         >
@@ -43,6 +44,8 @@ const CardComponent = forwardRef(({
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
+                    // Remove background color from Card to not override Box background
+                    backgroundColor: 'transparent',
                 }}
             >
                 <CardActionArea onClick={handleClick} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>

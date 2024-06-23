@@ -2,13 +2,13 @@
 import { Box } from '@mui/material';
 import CardComponent from './CardComponent';
 
-const CardContainer = ({ cards, handleCardClick, clickedCards, cardsPerRow, minCardWidth, onCreateContainerThree }) => {
+const CardContainer = ({ cards, handleCardClick, clickedCards, cardsPerRow, minCardWidth, containerId }) => {
     const cardRefs = useRef([]);
     const [maxHeight, setMaxHeight] = useState(0);
 
     useEffect(() => {
         let maxHeight = 0;
-        cardRefs.current.forEach(ref => {
+        cardRefs.current.forEach((ref) => {
             if (ref) {
                 maxHeight = Math.max(maxHeight, ref.clientHeight);
             }
@@ -30,7 +30,7 @@ const CardContainer = ({ cards, handleCardClick, clickedCards, cardsPerRow, minC
             {cards.map((card, index) => (
                 <CardComponent
                     key={index}
-                    ref={el => cardRefs.current[index] = el}
+                    ref={(el) => (cardRefs.current[index] = el)}
                     id={card.id}
                     title={card.title}
                     text={card.text}
@@ -42,7 +42,7 @@ const CardContainer = ({ cards, handleCardClick, clickedCards, cardsPerRow, minC
                     clickedCards={clickedCards}
                     handleCardClick={handleCardClick}
                     requirement={card.requirement}
-                    onCreateContainerThree={onCreateContainerThree}
+                    containerId={containerId}
                 />
             ))}
         </Box>
